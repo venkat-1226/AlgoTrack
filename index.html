@@ -1,53 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>CodeHub</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <h1>🚀 CodeHub</h1>
+    <div class="container">
 
-    <p>
-        The Ultimate Dashboard for Competitive Programmers
-    </p>
+        <!-- Header -->
+        <div class="hero section">
 
-    <hr>
+            <h1>🚀 CodeHub</h1>
 
-    <h2>📊 Supported Platforms</h2>
+            <p>The Ultimate Dashboard for Competitive Programmers</p>
 
-    <ul>
-        <li>LeetCode</li>
-        <li>Codeforces</li>
-        <li>CodeChef</li>
-        <li>AtCoder</li>
-        <li>HackerRank</li>
-        <li>GeeksforGeeks</li>
-    </ul>
+        </div>
 
-    <hr>
+        <!-- Platforms -->
+        <div class="section">
 
-    <h2>✨ Features</h2>
+            <h2>📊 Supported Platforms</h2>
 
-    <ol>
-        <li>Unified Dashboard</li>
-        <li>Contest Calendar</li>
-        <li>Contest Notifications</li>
-        <li>Rating Graphs</li>
-        <li>Daily Progress</li>
-        <li>Leaderboard</li>
-    </ol>
+            <div class="platform-container">
 
-    <hr>
+                <div class="platform-card">
 
-    <h2 id="goal">🎯 Goal</h2>
+                    <h3>🟡 LeetCode</h3>
 
-    <p>
-        Build one application where competitive programmers can
-        manage all coding platforms in one place.
-    </p>
+                    <p><strong>Rating:</strong> <span id="leetcode-rating">--</span></p>
+
+                    <p><strong>Solved:</strong> <span id="leetcode-solved">--</span></p>
+
+                    <button class="view-btn">View Profile</button>
+
+                </div>
+
+                <div class="platform-card">
+
+                    <h3>🔵 Codeforces</h3>
+
+                    <p><strong>Rating:</strong> <span id="codeforces-rating">--</span></p>
+
+                    <p><strong>Solved:</strong> <span id="codeforces-solved">--</span></p>
+
+                    <button class="view-btn">View Profile</button>
+
+                </div>
+
+                <div class="platform-card">
+
+                    <h3>⭐ CodeChef</h3>
+
+                    <p><strong>Rating:</strong> <span id="codechef-rating">--</span></p>
+
+                    <p><strong>Solved:</strong> <span id="codechef-solved">--</span></p>
+
+                    <button class="view-btn">View Profile</button>
+
+                </div>
+
+                <div class="platform-card">
+
+                    <h3>🔴 AtCoder</h3>
+
+                    <p><strong>Rating:</strong> <span id="atcoder-rating">--</span></p>
+
+                    <p><strong>Solved:</strong> <span id="atcoder-solved">--</span></p>
+
+                    <button class="view-btn">View Profile</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Upcoming Contests -->
+
+        <div class="section">
+
+            <h2>📅 Upcoming Contests</h2>
+
+            <table>
+
+                <tr>
+                    <th>Platform</th>
+                    <th>Contest</th>
+                    <th>Date</th>
+                </tr>
+
+                <tr>
+                    <td>Codeforces</td>
+                    <td>Round #1024</td>
+                    <td>Saturday</td>
+                </tr>
+
+                <tr>
+                    <td>LeetCode</td>
+                    <td>Weekly Contest</td>
+                    <td>Sunday</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- Features -->
+
+        <div class="section">
+
+            <h2>✨ Features</h2>
+
+            <ol>
+
+                <li>Unified Dashboard</li>
+                <li>Contest Calendar</li>
+                <li>Contest Notifications</li>
+                <li>Rating Graphs</li>
+                <li>Daily Progress</li>
+                <li>Leaderboard</li>
+
+            </ol>
+
+        </div>
+
+        <!-- Goal -->
+
+        <div class="section">
+
+            <h2 class="green-heading">🎯 Goal</h2>
+
+            <p>
+
+                Build one application where competitive programmers can
+                manage all coding platforms in one place.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
