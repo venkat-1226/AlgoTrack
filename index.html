@@ -10,96 +10,138 @@
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <!-- Header -->
-        <div class="hero section">
+    <!-- Hero -->
+    <div class="hero section">
 
-            <h1>🚀 CodeHub</h1>
+        <h1>🚀 CodeHub</h1>
 
-            <p>The Ultimate Dashboard for Competitive Programmers</p>
+        <p>The Ultimate Dashboard for Competitive Programmers</p>
 
-        </div>
+        <button id="theme-btn" class="theme-btn">
+            🌙 Dark Mode
+        </button>
 
-        <!-- Platforms -->
-        <div class="section">
+    </div>
 
-            <h2>📊 Supported Platforms</h2>
+    <!-- User Profiles -->
 
-            <!-- JavaScript will generate cards here -->
-            <div class="platform-container" id="platform-container">
+    <div class="section">
 
-            </div>
+        <h2>👤 Your Profiles</h2>
 
-        </div>
+        <div class="profile-form">
 
-        <!-- Upcoming Contests -->
+            <input
+                type="text"
+                id="leetcode-user"
+                placeholder="LeetCode Username">
 
-        <div class="section">
+            <input
+                type="text"
+                id="codeforces-user"
+                placeholder="Codeforces Username">
 
-            <h2>📅 Upcoming Contests</h2>
+            <input
+                type="text"
+                id="codechef-user"
+                placeholder="CodeChef Username">
 
-            <table>
+            <input
+                type="text"
+                id="atcoder-user"
+                placeholder="AtCoder Username">
 
-                <tr>
-                    <th>Platform</th>
-                    <th>Contest</th>
-                    <th>Date</th>
-                </tr>
+            <input
+                type="text"
+                id="college"
+                placeholder="College Name">
 
-                <tr>
-                    <td>Codeforces</td>
-                    <td>Round #1024</td>
-                    <td>Saturday</td>
-                </tr>
+            <button
+                id="save-btn"
+                class="save-btn">
 
-                <tr>
-                    <td>LeetCode</td>
-                    <td>Weekly Contest</td>
-                    <td>Sunday</td>
-                </tr>
+                Save Usernames
 
-            </table>
-
-        </div>
-
-        <!-- Features -->
-
-        <div class="section">
-
-            <h2>✨ Features</h2>
-
-            <ol>
-
-                <li>Unified Dashboard</li>
-                <li>Contest Calendar</li>
-                <li>Contest Notifications</li>
-                <li>Rating Graphs</li>
-                <li>Daily Progress</li>
-                <li>Leaderboard</li>
-
-            </ol>
-
-        </div>
-
-        <!-- Goal -->
-
-        <div class="section">
-
-            <h2 class="green-heading">🎯 Goal</h2>
-
-            <p>
-
-                Build one application where competitive programmers can
-                manage all coding platforms in one place.
-
-            </p>
+            </button>
 
         </div>
 
     </div>
 
-    <script src="script.js"></script>
+    <!-- Platforms -->
+
+    <div class="section">
+
+        <h2>📊 Supported Platforms</h2>
+
+        <div
+            class="platform-container"
+            id="platform-container">
+
+        </div>
+
+    </div>
+
+    <!-- Contests -->
+
+    <div class="section">
+
+        <h2>📅 Upcoming Contests</h2>
+
+        <table>
+
+            <tr>
+
+                <th>Platform</th>
+                <th>Contest</th>
+                <th>Date</th>
+
+            </tr>
+
+            <tr>
+
+                <td>Codeforces</td>
+                <td>Round #1024</td>
+                <td>Saturday</td>
+
+            </tr>
+
+            <tr>
+
+                <td>LeetCode</td>
+                <td>Weekly Contest</td>
+                <td>Sunday</td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <!-- Features -->
+
+    <div class="section">
+
+        <h2>✨ Features</h2>
+
+        <ol>
+
+            <li>Unified Dashboard</li>
+            <li>Contest Calendar</li>
+            <li>Contest Notifications</li>
+            <li>Rating Graphs</li>
+            <li>Daily Progress</li>
+            <li>Leaderboard</li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 
