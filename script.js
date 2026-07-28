@@ -747,7 +747,7 @@ filterTabs.forEach(btn => {
     });
 });
 
-// JSON Export & Import Backup
+// JSON Export Backup
 const exportBtn = document.getElementById("export-btn");
 if (exportBtn) {
     exportBtn.addEventListener("click", () => {
@@ -756,8 +756,7 @@ if (exportBtn) {
                 leetcode: document.getElementById("leetcode-user").value.trim(),
                 codeforces: document.getElementById("codeforces-user").value.trim(),
                 codechef: document.getElementById("codechef-user").value.trim(),
-                hackerrank: document.getElementById("hackerrank-user").value.trim(),
-                college: document.getElementById("college").value.trim()
+                hackerrank: document.getElementById("hackerrank-user").value.trim()
             },
             targetGoal: targetGoal,
             theme: localStorage.getItem("theme") || "light",
@@ -775,51 +774,13 @@ if (exportBtn) {
     });
 }
 
-const importBtn = document.getElementById("import-btn");
-const importFileInput = document.getElementById("import-file-input");
-
-if (importBtn && importFileInput) {
-    importBtn.addEventListener("click", () => importFileInput.click());
-    
-    importFileInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const data = JSON.parse(event.target.result);
-                if (data.profile) {
-                    localStorage.setItem("algo_profile", JSON.stringify(data.profile));
-                    document.getElementById("leetcode-user").value = data.profile.leetcode || "";
-                    document.getElementById("codeforces-user").value = data.profile.codeforces || "";
-                    document.getElementById("codechef-user").value = data.profile.codechef || "";
-                    document.getElementById("hackerrank-user").value = data.profile.hackerrank || "";
-                    document.getElementById("college").value = data.profile.college || "";
-                }
-                if (data.targetGoal) {
-                    targetGoal = data.targetGoal;
-                    localStorage.setItem("algo_target_goal", targetGoal);
-                    document.getElementById("target-goal-input").value = targetGoal;
-                }
-                showToast("📤 Settings imported successfully!");
-                loadAllProfiles();
-            } catch (err) {
-                showToast("Invalid JSON backup file.", "error");
-            }
-        };
-        reader.readAsText(file);
-    });
-}
-
 // Event Listeners & Persistence Initialization
 document.getElementById("save-btn").addEventListener("click", () => {
     const profile = {
         leetcode: document.getElementById("leetcode-user").value.trim(),
         codeforces: document.getElementById("codeforces-user").value.trim(),
         codechef: document.getElementById("codechef-user").value.trim(),
-        hackerrank: document.getElementById("hackerrank-user").value.trim(),
-        college: document.getElementById("college").value.trim()
+        hackerrank: document.getElementById("hackerrank-user").value.trim()
     };
     localStorage.setItem("algo_profile", JSON.stringify(profile));
     showToast("✅ Profile usernames saved!");
@@ -850,8 +811,7 @@ function initializeApp() {
         document.getElementById("leetcode-user").value = saved.leetcode || "";
         document.getElementById("codeforces-user").value = saved.codeforces || "";
         document.getElementById("codechef-user").value = saved.codechef || "";
-        document.getElementById("hackerrank-user").value = saved.hackerrank || saved.atcoder || "";
-        document.getElementById("college").value = saved.college || "";
+        document.getElementById("hackerrank-user").value = saved.hackerrank || "";
 
         if (saved.codeforces || saved.leetcode) {
             loadAllProfiles();
