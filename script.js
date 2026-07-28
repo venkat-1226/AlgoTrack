@@ -1,4 +1,4 @@
-console.log("📊 AlgoTrack Core Initialized");
+console.log("📊 AlgoTrack Phase 2 Initialized");
 
 // ==========================================
 // Global State & Data Structures
@@ -54,6 +54,8 @@ const defaultPlatforms = [
 let platforms = [...defaultPlatforms];
 let cfRatingHistory = [];
 let upcomingContests = [];
+let cfTopicTags = {};
+let leetCodeDiff = { easy: 0, medium: 0, hard: 0 };
 let activeContestFilter = "all";
 let targetGoal = 1000;
 
@@ -111,12 +113,44 @@ if (themeButton) {
         localStorage.setItem("theme", isDark ? "dark" : "light");
         themeButton.innerHTML = isDark ? "<span>☀️</span> Light Mode" : "<span>🌙</span> Dark Mode";
         
-        // Re-render charts to adjust text color
         drawCharts();
     });
 }
 
-// Helper to determine Codeforces Rank badge class
+// Browser Contest Notifications
+const notifyBtn = document.getElementById("notify-btn");
+if (notifyBtn) {
+    notifyBtn.addEventListener("click", () => {
+        if (!("Notification" in window)) {
+            showToast("Web Notifications not supported on this browser.", "error");
+            return;
+        }
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                showToast("🔔 Contest Alerts Enabled!");
+                notifyBtn.innerHTML = "<span>🔔</span> Alerts Enabled";
+                notifyBtn.style.borderColor = "var(--accent-emerald)";
+            } else {
+                showToast("Notification permission denied.", "info");
+            }
+        });
+    });
+}
+
+function checkContestAlerts() {
+    if ("Notification" in window && Notification.permission === "granted" && upcomingContests.length > 0) {
+        const next = upcomingContests[0];
+        const diffMins = Math.round((next.startTime - Date.now()) / 60000);
+        if (diffMins > 0 && diffMins <= 30) {
+            new Notification(`🏆 Contest Reminder: ${next.name}`, {
+                body: `${next.site} contest starts in ${diffMins} minutes! Get ready!`,
+                icon: "https://cdn.iconscout.com/icon/free/png-256/free-codeforces-3628695-3029920.png"
+            });
+        }
+    }
+}
+
+// Helper for CF Rank Badge
 function getCFRankClass(rank) {
     if (!rank || rank === "--") return "rank-badge";
     const r = rank.toLowerCase();
@@ -185,18 +219,10 @@ function attachPlatformButtons() {
         btn.onclick = () => {
             let handle = "";
             switch (platform.id) {
-                case "leetcode":
-                    handle = document.getElementById("leetcode-user").value.trim();
-                    break;
-                case "codeforces":
-                    handle = document.getElementById("codeforces-user").value.trim();
-                    break;
-                case "codechef":
-                    handle = document.getElementById("codechef-user").value.trim();
-                    break;
-                case "atcoder":
-                    handle = document.getElementById("atcoder-user").value.trim();
-                    break;
+                case "leetcode": handle = document.getElementById("leetcode-user").value.trim(); break;
+                case "codeforces": handle = document.getElementById("codeforces-user").value.trim(); break;
+                case "codechef": handle = document.getElementById("codechef-user").value.trim(); break;
+                case "atcoder": handle = document.getElementById("atcoder-user").value.trim(); break;
             }
             if (!handle && !platform.username) {
                 showToast(`Please enter your ${platform.name} username first.`, "info");
@@ -232,6 +258,8 @@ function updateStatistics() {
 
     updateProgress(totalSolvedCount);
     updateLeaderboard();
+    updateDifficultyBreakdown();
+    updateTopicTagsCloud();
     drawCharts();
 }
 
@@ -259,6 +287,51 @@ if (setGoalBtn) {
             updateProgress(totalSolved);
             showToast(`🎯 Goal updated to ${targetGoal} problems!`);
         }
+    });
+}
+
+// ==========================================
+// Phase 2: Difficulty & Topic Analytics Widgets
+// ==========================================
+
+function updateDifficultyBreakdown() {
+    const easyCount = document.getElementById("lc-easy-count");
+    const mediumCount = document.getElementById("lc-medium-count");
+    const hardCount = document.getElementById("lc-hard-count");
+    
+    const easyBar = document.getElementById("lc-easy-bar");
+    const mediumBar = document.getElementById("lc-medium-bar");
+    const hardBar = document.getElementById("lc-hard-bar");
+
+    const total = (leetcodeDiff.easy + leetCodeDiff.medium + leetCodeDiff.hard) || 1;
+
+    if (easyCount) easyCount.textContent = `${leetcodeDiff.easy} Solved`;
+    if (mediumCount) mediumCount.textContent = `${leetcodeDiff.medium} Solved`;
+    if (hardCount) hardCount.textContent = `${leetcodeDiff.hard} Solved`;
+
+    if (easyBar) easyBar.style.width = `${Math.min(100, Math.round((leetcodeDiff.easy / total) * 100))}%`;
+    if (mediumBar) mediumBar.style.width = `${Math.min(100, Math.round((leetcodeDiff.medium / total) * 100))}%`;
+    if (hardBar) hardBar.style.width = `${Math.min(100, Math.round((leetcodeDiff.hard / total) * 100))}%`;
+}
+
+function updateTopicTagsCloud() {
+    const container = document.getElementById("cf-tags-container");
+    if (!container) return;
+
+    const tagsArray = Object.entries(cfTopicTags).sort((a, b) => b[1] - a[1]);
+
+    if (tagsArray.length === 0) {
+        container.innerHTML = `<span class="tag-pill">Load Codeforces handle to see topic analytics</span>`;
+        return;
+    }
+
+    container.innerHTML = "";
+    tagsArray.slice(0, 14).forEach(([tag, count]) => {
+        container.innerHTML += `
+            <span class="tag-pill">
+                ${tag} <span class="tag-count">${count}</span>
+            </span>
+        `;
     });
 }
 
@@ -299,14 +372,13 @@ function updateLeaderboard() {
 // Data Fetchers & API Integrations
 // ==========================================
 
-// 1. Codeforces API Integration
+// Codeforces API Integration
 async function loadCodeforcesData(username) {
     if (!username) return;
     const cfIndex = platforms.findIndex(p => p.id === "codeforces");
     platforms[cfIndex].username = username;
 
     try {
-        // Fetch User Info
         const infoRes = await fetch(`https://codeforces.com/api/user.info?handles=${username}`);
         const infoData = await infoRes.json();
 
@@ -318,22 +390,29 @@ async function loadCodeforcesData(username) {
             if (user.titlePhoto) platforms[cfIndex].avatar = user.titlePhoto;
         }
 
-        // Fetch User Status (Solved problems)
         const statusRes = await fetch(`https://codeforces.com/api/user.status?handle=${username}`);
         const statusData = await statusRes.json();
 
         if (statusData.status === "OK") {
             const solvedProblems = new Set();
+            cfTopicTags = {};
+
             statusData.result.forEach(sub => {
                 if (sub.verdict === "OK" && sub.problem) {
                     const probId = sub.problem.contestId ? `${sub.problem.contestId}-${sub.problem.index}` : sub.problem.name;
-                    solvedProblems.add(probId);
+                    if (!solvedProblems.has(probId)) {
+                        solvedProblems.add(probId);
+                        if (sub.problem.tags) {
+                            sub.problem.tags.forEach(tag => {
+                                cfTopicTags[tag] = (cfTopicTags[tag] || 0) + 1;
+                            });
+                        }
+                    }
                 }
             });
             platforms[cfIndex].solved = solvedProblems.size;
         }
 
-        // Fetch Rating History for Chart
         const ratingRes = await fetch(`https://codeforces.com/api/user.rating?handle=${username}`);
         const ratingData = await ratingRes.json();
         if (ratingData.status === "OK") {
@@ -346,7 +425,7 @@ async function loadCodeforcesData(username) {
     }
 }
 
-// 2. LeetCode Stats Fetcher
+// LeetCode Stats Fetcher
 async function loadLeetCodeData(username) {
     if (!username) return;
     const lcIndex = platforms.findIndex(p => p.id === "leetcode");
@@ -360,6 +439,10 @@ async function loadLeetCodeData(username) {
                 platforms[lcIndex].solved = data.totalSolved ?? 0;
                 platforms[lcIndex].rating = data.ranking ? Math.max(1200, 2500 - data.ranking) : 1500;
                 platforms[lcIndex].maxRating = data.ranking ?? "--";
+
+                leetcodeDiff.easy = data.easySolved ?? 120;
+                leetcodeDiff.medium = data.mediumSolved ?? 180;
+                leetcodeDiff.hard = data.hardSolved ?? 40;
                 return;
             }
         }
@@ -367,15 +450,16 @@ async function loadLeetCodeData(username) {
         console.log("LeetCode API fallback trigger:", err);
     }
     
-    // Fallback default simulation for LeetCode if stats API proxy is down
+    // Fallback simulation
     if (platforms[lcIndex].solved === "--") {
-        platforms[lcIndex].solved = 250;
+        platforms[lcIndex].solved = 340;
         platforms[lcIndex].rating = 1620;
         platforms[lcIndex].maxRating = 1680;
+        leetcodeDiff = { easy: 140, medium: 160, hard: 40 };
     }
 }
 
-// 3. Main Load Profile Function
+// Main Load Profile Function
 async function loadAllProfiles() {
     const lcUser = document.getElementById("leetcode-user").value.trim();
     const cfUser = document.getElementById("codeforces-user").value.trim();
@@ -390,13 +474,9 @@ async function loadAllProfiles() {
     showLoader();
 
     try {
-        // Load Codeforces
         if (cfUser) await loadCodeforcesData(cfUser);
-        
-        // Load LeetCode
         if (lcUser) await loadLeetCodeData(lcUser);
 
-        // CodeChef & AtCoder fallback / manual preserve
         if (ccUser) {
             const ccIdx = platforms.findIndex(p => p.id === "codechef");
             platforms[ccIdx].username = ccUser;
@@ -436,7 +516,6 @@ function drawCharts() {
     const textColor = isDark ? "#cbd5e1" : "#475569";
     const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
 
-    // 1. Rating Bar Chart
     const ratingCtx = document.getElementById("ratingChart");
     if (ratingCtx) {
         const labels = platforms.map(p => p.name);
@@ -463,9 +542,7 @@ function drawCharts() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     x: { ticks: { color: textColor }, grid: { display: false } },
                     y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }
@@ -474,7 +551,6 @@ function drawCharts() {
         });
     }
 
-    // 2. Codeforces Rating History Line Chart
     const cfCtx = document.getElementById("cfHistoryChart");
     if (cfCtx) {
         let labels = ["Contest 1", "Contest 2", "Contest 3", "Contest 4", "Contest 5"];
@@ -505,9 +581,7 @@ function drawCharts() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     x: { ticks: { color: textColor, display: false }, grid: { display: false } },
                     y: { ticks: { color: textColor }, grid: { color: gridColor } }
@@ -544,21 +618,12 @@ async function loadContests() {
                 .reverse();
         }
 
-        // Add curated upcoming contests for LeetCode, CodeChef, AtCoder
         const now = Date.now();
         const curated = [
             {
                 site: "LeetCode",
                 name: "LeetCode Weekly Contest 410",
                 startTime: now + 86400000 * 2,
-                duration: "90 mins",
-                durationSec: 5400,
-                url: "https://leetcode.com/contest/"
-            },
-            {
-                site: "LeetCode",
-                name: "LeetCode Biweekly Contest 137",
-                startTime: now + 86400000 * 5,
                 duration: "90 mins",
                 durationSec: 5400,
                 url: "https://leetcode.com/contest/"
@@ -587,6 +652,7 @@ async function loadContests() {
 
         renderContestTable();
         startCountdownTimer();
+        checkContestAlerts();
 
     } catch (err) {
         console.error("Contests fetch error:", err);
@@ -613,7 +679,6 @@ function renderContestTable() {
         const startDate = new Date(c.startTime);
         const endDate = new Date(c.startTime + (c.durationSec ? c.durationSec * 1000 : 7200000));
         
-        // Generate Google Calendar Link
         const formatCalDate = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
         const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(c.name)}&dates=${formatCalDate(startDate)}/${formatCalDate(endDate)}&details=Participate+in+${encodeURIComponent(c.name)}+on+${c.site}&location=${encodeURIComponent(c.url)}`;
 
@@ -682,10 +747,77 @@ filterTabs.forEach(btn => {
 });
 
 // ==========================================
+// Phase 2: JSON Export & Import Backup
+// ==========================================
+
+const exportBtn = document.getElementById("export-btn");
+if (exportBtn) {
+    exportBtn.addEventListener("click", () => {
+        const backupData = {
+            profile: {
+                leetcode: document.getElementById("leetcode-user").value.trim(),
+                codeforces: document.getElementById("codeforces-user").value.trim(),
+                codechef: document.getElementById("codechef-user").value.trim(),
+                atcoder: document.getElementById("atcoder-user").value.trim(),
+                college: document.getElementById("college").value.trim()
+            },
+            targetGoal: targetGoal,
+            theme: localStorage.getItem("theme") || "light",
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `algotrack-data-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("📥 Backup JSON exported!");
+    });
+}
+
+const importBtn = document.getElementById("import-btn");
+const importFileInput = document.getElementById("import-file-input");
+
+if (importBtn && importFileInput) {
+    importBtn.addEventListener("click", () => importFileInput.click());
+    
+    importFileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.profile) {
+                    localStorage.setItem("algo_profile", JSON.stringify(data.profile));
+                    document.getElementById("leetcode-user").value = data.profile.leetcode || "";
+                    document.getElementById("codeforces-user").value = data.profile.codeforces || "";
+                    document.getElementById("codechef-user").value = data.profile.codechef || "";
+                    document.getElementById("atcoder-user").value = data.profile.atcoder || "";
+                    document.getElementById("college").value = data.profile.college || "";
+                }
+                if (data.targetGoal) {
+                    targetGoal = data.targetGoal;
+                    localStorage.setItem("algo_target_goal", targetGoal);
+                    document.getElementById("target-goal-input").value = targetGoal;
+                }
+                showToast("📤 Settings imported successfully!");
+                loadAllProfiles();
+            } catch (err) {
+                showToast("Invalid JSON backup file.", "error");
+            }
+        };
+        reader.readAsText(file);
+    });
+}
+
+// ==========================================
 // Event Listeners & Persistence Initialization
 // ==========================================
 
-// Save Handles
 document.getElementById("save-btn").addEventListener("click", () => {
     const profile = {
         leetcode: document.getElementById("leetcode-user").value.trim(),
@@ -698,12 +830,10 @@ document.getElementById("save-btn").addEventListener("click", () => {
     showToast("✅ Profile usernames saved!");
 });
 
-// Load Button
 document.getElementById("load-btn").addEventListener("click", () => {
     loadAllProfiles();
 });
 
-// Reset Button
 document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Are you sure you want to reset saved profiles and stats?")) {
         localStorage.removeItem("algo_profile");
@@ -712,9 +842,7 @@ document.getElementById("reset-btn").addEventListener("click", () => {
     }
 });
 
-// Initial App Boot
 function initializeApp() {
-    // Restore Saved Goal
     const savedGoal = localStorage.getItem("algo_target_goal");
     if (savedGoal) {
         targetGoal = parseInt(savedGoal);
@@ -722,7 +850,6 @@ function initializeApp() {
         if (goalInput) goalInput.value = targetGoal;
     }
 
-    // Restore Saved Profiles
     const saved = JSON.parse(localStorage.getItem("algo_profile"));
     if (saved) {
         document.getElementById("leetcode-user").value = saved.leetcode || "";
@@ -731,7 +858,6 @@ function initializeApp() {
         document.getElementById("atcoder-user").value = saved.atcoder || "";
         document.getElementById("college").value = saved.college || "";
 
-        // Auto load if handles exist
         if (saved.codeforces || saved.leetcode) {
             loadAllProfiles();
         } else {

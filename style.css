@@ -405,6 +405,95 @@ body.dark .logo-text {
     color: #ffffff;
 }
 
+.btn-outline {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+}
+
+.btn-outline:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+/* ========================================== */
+/* Difficulty & Skill Breakdown Widget */
+/* ========================================== */
+.difficulty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.difficulty-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.diff-item {
+    margin-bottom: 16px;
+}
+
+.diff-item:last-child {
+    margin-bottom: 0;
+}
+
+.diff-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.diff-bar-track {
+    width: 100%;
+    height: 12px;
+    background: var(--bg-main);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.diff-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s ease;
+}
+
+.easy-fill { background: linear-gradient(90deg, #10b981, #34d399); }
+.medium-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.hard-fill { background: linear-gradient(90deg, #ef4444, #f87171); }
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag-pill {
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-blue);
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.tag-count {
+    background: var(--accent-blue);
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 800;
+}
+
 /* ========================================== */
 /* Platform Cards Grid */
 /* ========================================== */
