@@ -2,7 +2,7 @@
 
 > **Track • Analyze • Conquer**
 
-**AlgoTrack** is a modern, unified Competitive Programming dashboard designed for developers, students, and competitive coders to manage their profiles across multiple coding platforms (**Codeforces, LeetCode, CodeChef, AtCoder**) from a single aesthetic interface.
+**AlgoTrack** is a modern, unified Competitive Programming dashboard designed for developers, students, and competitive coders to manage their profiles across multiple coding platforms (**Codeforces, LeetCode, CodeChef, HackerRank**) from a single aesthetic interface.
 
 ---
 
@@ -10,19 +10,21 @@
 
 - 🌙 **Dark / Light Glassmorphism Mode**: High-contrast, custom-tailored theme system with theme persistence.
 - ⚡ **Live Codeforces Integration**: Fetches live rating, rank badges, peak rating, avatar, problem submission count (`user.status`), and contest rating history.
-- 🟡 **LeetCode Stats Tracker**: Fetches total solved problem count and rank estimates.
+- 🟡 **LeetCode Stats Tracker**: Fetches total solved problem count, rank estimates, and difficulty breakdown (Easy 🟢, Medium 🟡, Hard 🔴).
+- 💚 **HackerRank & CodeChef Profile Management**: Tracks ratings, ranks, badges, solved counts, and direct profile routing.
+- 🏷️ **Codeforces Topic Tag Analytics**: Analyzes solved submissions to render a dynamic topic tag cloud (`dp`, `math`, `greedy`, `graphs`, `trees`, `implementation`).
 - 📈 **Dynamic Performance Analytics (Chart.js)**:
   - **Platform Rating Comparison**: Bar chart showing live ratings across platforms.
   - **Codeforces Rating Progression**: Interactive line chart tracing contest performance over time.
 - 📅 **Live Upcoming Contest Calendar**:
   - Live Codeforces contest list fetched via official API.
-  - Filter by platform (**All, Codeforces, LeetCode, CodeChef, AtCoder**).
+  - Filter by platform (**All, Codeforces, LeetCode, CodeChef, HackerRank**).
   - ⏱️ **Live Countdown Timer** to the nearest upcoming contest.
   - 📅 **Add to Google Calendar** link generator for every contest.
 - 🎯 **Custom Goal Setter & Progress Bar**: Set custom target problem counts (e.g. 500, 1000, 2000) with animated fill progress.
 - 🏆 **Platform Leaderboard**: Ranks connected platform accounts by current rating with gold 🥇, silver 🥈, and bronze 🥉 badges.
-- 💾 **Profile Persistence**: LocalStorage caching for user handles, theme preference, and target goals.
-- 🔔 **Toast Alerts & Loading Spinners**: Responsive visual feedback for user actions.
+- 📂 **JSON Data Export & Import**: Backup or restore dashboard settings and profile usernames.
+- 🔔 **Toast Alerts & Web Contest Notifications**: Responsive visual feedback for user actions and contest start alarms.
 
 ---
 

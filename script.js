@@ -1,4 +1,4 @@
-console.log("📊 AlgoTrack Phase 2 Initialized");
+console.log("📊 AlgoTrack Core Initialized");
 
 // ==========================================
 // Global State & Data Structures
@@ -39,15 +39,15 @@ const defaultPlatforms = [
         avatar: "https://cdn.codechef.com/images/cc-logo.svg"
     },
     {
-        id: "atcoder",
-        name: "🔴 AtCoder",
+        id: "hackerrank",
+        name: "💚 HackerRank",
         username: "",
         rating: "--",
         solved: "--",
         rank: "--",
         maxRating: "--",
-        url: "https://atcoder.jp/users/",
-        avatar: "https://img.atcoder.jp/assets/atcoder.png"
+        url: "https://www.hackerrank.com/profile/",
+        avatar: "https://upload.wikimedia.org/wikipedia/commons/4/40/HackerRank_Icon-1000px.png"
     }
 ];
 
@@ -222,7 +222,7 @@ function attachPlatformButtons() {
                 case "leetcode": handle = document.getElementById("leetcode-user").value.trim(); break;
                 case "codeforces": handle = document.getElementById("codeforces-user").value.trim(); break;
                 case "codechef": handle = document.getElementById("codechef-user").value.trim(); break;
-                case "atcoder": handle = document.getElementById("atcoder-user").value.trim(); break;
+                case "hackerrank": handle = document.getElementById("hackerrank-user").value.trim(); break;
             }
             if (!handle && !platform.username) {
                 showToast(`Please enter your ${platform.name} username first.`, "info");
@@ -291,7 +291,7 @@ if (setGoalBtn) {
 }
 
 // ==========================================
-// Phase 2: Difficulty & Topic Analytics Widgets
+// Difficulty & Topic Analytics Widgets
 // ==========================================
 
 function updateDifficultyBreakdown() {
@@ -464,9 +464,9 @@ async function loadAllProfiles() {
     const lcUser = document.getElementById("leetcode-user").value.trim();
     const cfUser = document.getElementById("codeforces-user").value.trim();
     const ccUser = document.getElementById("codechef-user").value.trim();
-    const acUser = document.getElementById("atcoder-user").value.trim();
+    const hrUser = document.getElementById("hackerrank-user").value.trim();
 
-    if (!lcUser && !cfUser && !ccUser && !acUser) {
+    if (!lcUser && !cfUser && !ccUser && !hrUser) {
         showToast("Please enter at least one platform username.", "error");
         return;
     }
@@ -486,12 +486,13 @@ async function loadAllProfiles() {
             }
         }
 
-        if (acUser) {
-            const acIdx = platforms.findIndex(p => p.id === "atcoder");
-            platforms[acIdx].username = acUser;
-            if (platforms[acIdx].rating === "--") {
-                platforms[acIdx].rating = 1420;
-                platforms[acIdx].solved = 120;
+        if (hrUser) {
+            const hrIdx = platforms.findIndex(p => p.id === "hackerrank");
+            platforms[hrIdx].username = hrUser;
+            if (platforms[hrIdx].rating === "--") {
+                platforms[hrIdx].rating = 1650;
+                platforms[hrIdx].solved = 210;
+                platforms[hrIdx].rank = "5 Star";
             }
         }
 
@@ -534,7 +535,7 @@ function drawCharts() {
                         "rgba(245, 158, 11, 0.8)",
                         "rgba(59, 130, 246, 0.8)",
                         "rgba(16, 185, 129, 0.8)",
-                        "rgba(244, 63, 94, 0.8)"
+                        "rgba(34, 197, 94, 0.8)"
                     ],
                     borderRadius: 8
                 }]
@@ -637,12 +638,12 @@ async function loadContests() {
                 url: "https://www.codechef.com/contests"
             },
             {
-                site: "AtCoder",
-                name: "AtCoder Beginner Contest 368",
+                site: "HackerRank",
+                name: "HackerRank Weekly CodeSprint",
                 startTime: now + 86400000 * 4,
-                duration: "100 mins",
-                durationSec: 6000,
-                url: "https://atcoder.jp/contests/"
+                duration: "180 mins",
+                durationSec: 10800,
+                url: "https://www.hackerrank.com/contests"
             }
         ];
 
@@ -746,10 +747,7 @@ filterTabs.forEach(btn => {
     });
 });
 
-// ==========================================
-// Phase 2: JSON Export & Import Backup
-// ==========================================
-
+// JSON Export & Import Backup
 const exportBtn = document.getElementById("export-btn");
 if (exportBtn) {
     exportBtn.addEventListener("click", () => {
@@ -758,7 +756,7 @@ if (exportBtn) {
                 leetcode: document.getElementById("leetcode-user").value.trim(),
                 codeforces: document.getElementById("codeforces-user").value.trim(),
                 codechef: document.getElementById("codechef-user").value.trim(),
-                atcoder: document.getElementById("atcoder-user").value.trim(),
+                hackerrank: document.getElementById("hackerrank-user").value.trim(),
                 college: document.getElementById("college").value.trim()
             },
             targetGoal: targetGoal,
@@ -796,7 +794,7 @@ if (importBtn && importFileInput) {
                     document.getElementById("leetcode-user").value = data.profile.leetcode || "";
                     document.getElementById("codeforces-user").value = data.profile.codeforces || "";
                     document.getElementById("codechef-user").value = data.profile.codechef || "";
-                    document.getElementById("atcoder-user").value = data.profile.atcoder || "";
+                    document.getElementById("hackerrank-user").value = data.profile.hackerrank || "";
                     document.getElementById("college").value = data.profile.college || "";
                 }
                 if (data.targetGoal) {
@@ -814,16 +812,13 @@ if (importBtn && importFileInput) {
     });
 }
 
-// ==========================================
 // Event Listeners & Persistence Initialization
-// ==========================================
-
 document.getElementById("save-btn").addEventListener("click", () => {
     const profile = {
         leetcode: document.getElementById("leetcode-user").value.trim(),
         codeforces: document.getElementById("codeforces-user").value.trim(),
         codechef: document.getElementById("codechef-user").value.trim(),
-        atcoder: document.getElementById("atcoder-user").value.trim(),
+        hackerrank: document.getElementById("hackerrank-user").value.trim(),
         college: document.getElementById("college").value.trim()
     };
     localStorage.setItem("algo_profile", JSON.stringify(profile));
@@ -855,7 +850,7 @@ function initializeApp() {
         document.getElementById("leetcode-user").value = saved.leetcode || "";
         document.getElementById("codeforces-user").value = saved.codeforces || "";
         document.getElementById("codechef-user").value = saved.codechef || "";
-        document.getElementById("atcoder-user").value = saved.atcoder || "";
+        document.getElementById("hackerrank-user").value = saved.hackerrank || saved.atcoder || "";
         document.getElementById("college").value = saved.college || "";
 
         if (saved.codeforces || saved.leetcode) {
