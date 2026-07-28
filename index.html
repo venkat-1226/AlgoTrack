@@ -4,284 +4,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoTrack</title>
+    <meta name="description" content="AlgoTrack - Unified Competitive Programming Dashboard to track profiles, ratings, solved problems, and upcoming contests across LeetCode, Codeforces, CodeChef, and AtCoder.">
+    <title>AlgoTrack • Competitive Programming Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <!-- Hero -->
-    <div class="hero section">
+        <!-- Top Navigation Bar -->
+        <nav class="navbar" id="top-nav">
+            <div class="logo-group">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">AlgoTrack</span>
+            </div>
+            <div class="nav-actions">
+                <span class="live-time" id="live-clock">--:--:--</span>
+                <button id="theme-btn" class="theme-toggle-btn">
+                    <span>🌙</span> Dark Mode
+                </button>
+            </div>
+        </nav>
 
-        <h1>📊 AlgoTrack</h1>
+        <!-- Hero Banner -->
+        <header class="hero-banner">
+            <h1>Track • Analyze • Conquer</h1>
+            <p>Your unified Competitive Programming analytics dashboard. Manage profiles, track live ratings, problem counts, and upcoming contest schedules in one place.</p>
+        </header>
 
-        <p>Track Your Competitive Programming Journey</p>
+        <!-- Quick Stats Overview -->
+        <section class="section-card" id="overview-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>📈</span> Dashboard Overview</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper icon-blue">📱</div>
+                    <div class="stat-info">
+                        <h4>Active Platforms</h4>
+                        <h2 id="total-platforms">4</h2>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper icon-amber">🏆</div>
+                    <div class="stat-info">
+                        <h4>Peak Rating</h4>
+                        <h2 id="highest-rating">--</h2>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper icon-emerald">📚</div>
+                    <div class="stat-info">
+                        <h4>Total Solved</h4>
+                        <h2 id="total-solved">--</h2>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon-wrapper icon-purple">📅</div>
+                    <div class="stat-info">
+                        <h4>Upcoming Contests</h4>
+                        <h2 id="total-contests">--</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <button id="theme-btn" class="theme-btn">
-            🌙 Dark Mode
-        </button>
+        <!-- User Profiles Setup -->
+        <section class="section-card" id="profiles-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>👤</span> User Profiles & Handles</h2>
+            </div>
+            <div class="profile-grid">
+                <div class="input-group">
+                    <label for="leetcode-user">🟡 LeetCode Handle</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="leetcode-user" placeholder="e.g. neal_wu">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="codeforces-user">🔵 Codeforces Handle</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="codeforces-user" placeholder="e.g. tourist">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="codechef-user">⭐ CodeChef Handle</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="codechef-user" placeholder="e.g. chef_master">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="atcoder-user">🔴 AtCoder Handle</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="atcoder-user" placeholder="e.g. rng_58">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="college">🎓 Institute / College</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="college" placeholder="e.g. Stanford University">
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button id="load-btn" class="btn btn-primary">
+                    ⚡ Load Live Stats
+                </button>
+                <button id="save-btn" class="btn btn-success">
+                    💾 Save Usernames
+                </button>
+                <button id="reset-btn" class="btn btn-danger">
+                    🔄 Reset All
+                </button>
+            </div>
+        </section>
 
-    </div>
+        <!-- Platform Cards -->
+        <section class="section-card" id="platform-cards-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>📊</span> Coding Platforms</h2>
+                <div class="search-box-wrapper" style="margin-bottom:0; width:260px;">
+                    <input type="text" id="search-box" placeholder="🔍 Search platform...">
+                </div>
+            </div>
+            <div class="platforms-grid" id="platform-container">
+                <!-- Dynamically populated platform cards -->
+            </div>
+        </section>
 
-    <!-- User Profiles -->
+        <!-- Interactive Charts & Analytics -->
+        <section class="section-card" id="analytics-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>📉</span> Performance Analytics</h2>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-wrapper">
+                    <h3 style="font-family:var(--font-heading); margin-bottom:14px; font-size:17px;">Platform Ratings</h3>
+                    <div class="chart-container">
+                        <canvas id="ratingChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3 style="font-family:var(--font-heading); margin-bottom:14px; font-size:17px;">Codeforces Rating Timeline</h3>
+                    <div class="chart-container">
+                        <canvas id="cfHistoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <div class="section">
-
-    <h2>👤 Your Profiles</h2>
-
-    <div class="profile-form">
-
-        <input
-            type="text"
-            id="leetcode-user"
-            placeholder="LeetCode Username">
-
-        <input
-            type="text"
-            id="codeforces-user"
-            placeholder="Codeforces Username">
-
-        <input
-            type="text"
-            id="codechef-user"
-            placeholder="CodeChef Username">
-
-        <input
-            type="text"
-            id="atcoder-user"
-            placeholder="AtCoder Username">
-
-        <input
-            type="text"
-            id="college"
-            placeholder="College Name">
-
-        <div class="button-group">
-
-            <button
-                id="save-btn"
-                class="save-btn">
-
-                Save Usernames
-
-            </button>
-
-            <button
-                id="load-btn"
-                class="load-btn">
-
-                Load Profiles
-
-            </button>
-
-            <button
-    id="reset-btn"
-    class="reset-btn">
-
-    Reset
-
-</button>
-
-        </div>
-
-    </div>
-
-</div>
-    <!-- Statistics -->
-
-<div class="section">
-
-    <h2>📈 Dashboard Statistics</h2>
-
-    <div class="stats-container">
-
-        <div class="stat-card">
-
-            <h3>📱 Platforms</h3>
-
-            <h1 id="total-platforms">0</h1>
-
-        </div>
-
-        <div class="stat-card">
-
-            <h3>🏆 Highest Rating</h3>
-
-            <h1 id="highest-rating">0</h1>
-
-        </div>
-
-        <div class="stat-card">
-
-            <h3>📚 Total Solved</h3>
-
-            <h1 id="total-solved">0</h1>
-
-        </div>
-
-    </div>
-
-</div>
-<!-- Progress Tracker -->
-
-<div class="section">
-
-    <h2>📈 Overall Progress</h2>
-
-    <div class="progress-card">
-
-        <div class="progress-bar">
-
-            <div class="progress-fill" id="progress-fill">
-
+        <!-- Upcoming Contests -->
+        <section class="section-card" id="contests-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>📅</span> Upcoming Contests</h2>
+                <div class="filter-tabs" id="contest-filters">
+                    <button class="tab-btn active" data-filter="all">All</button>
+                    <button class="tab-btn" data-filter="Codeforces">Codeforces</button>
+                    <button class="tab-btn" data-filter="LeetCode">LeetCode</button>
+                    <button class="tab-btn" data-filter="CodeChef">CodeChef</button>
+                    <button class="tab-btn" data-filter="AtCoder">AtCoder</button>
+                </div>
             </div>
 
-        </div>
+            <!-- Countdown Banner -->
+            <div class="countdown-banner" id="countdown-banner">
+                <div class="countdown-title" id="next-contest-name">⏱️ Next Contest: Loading contest schedule...</div>
+                <div class="countdown-digits" id="next-contest-timer">--h --m --s</div>
+            </div>
 
-        <h3 id="progress-text">0%</h3>
+            <div class="contests-table-wrapper">
+                <table class="contests-table">
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>Contest Name</th>
+                            <th>Start Time</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contest-table">
+                        <tr>
+                            <td colspan="5" style="text-align:center; color:var(--text-muted);">Loading upcoming contests...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-        <p id="progress-details">0 / 1000 Problems Solved</p>
+        <!-- Progress Tracker & Goal Setter -->
+        <section class="section-card" id="progress-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>🎯</span> Problem Solving Goal</h2>
+                <div class="goal-input-group">
+                    <label for="target-goal-input" style="font-size:13px; font-weight:600;">Target Goal:</label>
+                    <input type="number" id="target-goal-input" value="1000" min="10" max="100000" step="50">
+                    <button id="set-goal-btn" class="btn btn-primary" style="padding:6px 14px; font-size:13px;">Set</button>
+                </div>
+            </div>
+            <div class="progress-card-inner">
+                <div class="progress-track">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-meta">
+                    <span id="progress-details" style="font-size:16px;">0 / 1000 Solved</span>
+                    <span id="progress-text" style="font-size:18px; color:var(--accent-blue);">0% Completed</span>
+                </div>
+            </div>
+        </section>
 
-    </div>
+        <!-- Platform Leaderboard -->
+        <section class="section-card" id="leaderboard-section">
+            <div class="section-header">
+                <h2 class="section-title"><span>🏆</span> Platform Rating Leaderboard</h2>
+            </div>
+            <div class="leaderboard-list" id="leaderboard">
+                <!-- Dynamic Leaderboard Items -->
+            </div>
+        </section>
 
-</div>
-
-<div class="section">
-
-    <h2>📊 Rating Graph</h2>
-
-    <canvas id="ratingChart"></canvas>
-
-</div>
-
-<!-- Leaderboard -->
-
-<div class="section">
-
-    <h2>🏆 Platform Leaderboard</h2>
-
-    <div id="leaderboard">
-
-    </div>
-
-</div>
-
-    <!-- Platforms -->
-
-    <div class="section">
-
-        <h2>📊 Supported Platforms</h2>
-        <div class="search-container">
-
-    <input
-        type="text"
-        id="search-box"
-        placeholder="🔍 Search Platform">
-
-</div>
-        <div class="platform-container" id="platform-container">
-
-    <div class="platform-card" id="codeforces-card">
-
-        <h3>🔵 Codeforces</h3>
-
-        <p><strong>Username:</strong> <span id="cf-name">--</span></p>
-
-        <p><strong>Rating:</strong> <span id="cf-rating">--</span></p>
-
-        <p><strong>Rank:</strong> <span id="cf-rank">--</span></p>
-
-        <p><strong>Max Rating:</strong> <span id="cf-max-rating">--</span></p>
-
-        <button class="view-btn" id="cf-profile-btn">
-            View Profile
-        </button>
-
-    </div>
-
-</div>
+        <footer class="footer">
+            <h3>📊 AlgoTrack</h3>
+            <p>Built for Competitive Programmers • Built by Venkat Madduri</p>
+            <p>© 2026 AlgoTrack. All rights reserved.</p>
+        </footer>
 
     </div>
 
-    <!-- Contests -->
+    <!-- Toast Notification -->
+    <div id="toast"></div>
 
-    <div class="section">
-
-        <h2>📅 Upcoming Contests</h2>
-
-        <table>
-
-    <thead>
-
-        <tr>
-
-            <th>Platform</th>
-            <th>Contest</th>
-            <th>Date</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody id="contest-table">
-
-    </tbody>
-
-</table>
-
+    <!-- Loading Spinner Overlay -->
+    <div id="loader" class="loader-container">
+        <div class="spinner"></div>
     </div>
 
-    <!-- Features -->
-
-    <div class="section">
-
-        <h2>✨ Features</h2>
-
-        <ol>
-
-            <li>Unified Dashboard</li>
-            <li>Contest Calendar</li>
-            <li>Contest Notifications</li>
-            <li>Rating Graphs</li>
-            <li>Daily Progress</li>
-            <li>Leaderboard</li>
-
-        </ol>
-
-    </div>
-
-</div>
-
-<!-- Toast Notification -->
-
-<div id="toast"></div>
-
-<!-- Loading Spinner -->
-
-<div id="loader" class="loader-container">
-
-    <div class="loader"></div>
-
-</div>
-
-<footer class="footer">
-
-    <h3>📊 AlgoTrack</h3>
-
-    <p>
-        Built with ❤️ by Venkat Madduri
-    </p>
-
-    <p>
-        © 2026 Venkat Madduri
-    </p>
-
-</footer>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 
